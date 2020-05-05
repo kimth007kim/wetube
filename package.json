@@ -1,0 +1,19 @@
+{
+  "name": "wetube",
+  "version": "1.0.0",
+  "description": "Cloning youtube",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kimth007kim/wetube.git"
+  },
+  "author": "Kim Kyung dong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kimth007kim/wetube/issues"
+  },
+  "homepage": "https://github.com/kimth007kim/wetube#readme",
+  "dependencies": {
+    "express": "4.17.1"
+  }
+}

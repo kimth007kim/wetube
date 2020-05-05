@@ -1,0 +1,57 @@
+#2.0 What is a Server
+
+*서버란 무엇일까? 접속을 받아주는 무언가
+-서버는 컴퓨터이다. 인터넷에 연결된 컴퓨터이다.
+소프트웨어적 서버는 인터넷에 연결된 한 덩어리의 코드이다. 
+하나는 물리적으로 늘켜져 있는 컴퓨터 라는 의미
+다른의미로는내접속에 요청을 응답하는 컴퓨터이다.
+
+
+#2.1 What is Express
+
+express는 프레임워크이다.
+아주많은 코드로 우리가  쉽게 이용할수있게만들어준것이다.
+Express로 할수있는것은 몇줄로 서버로 만들수 있다.
+이미 많은줄로 만들어져있어서 빨리 만들수있다.
+Django,lalabel,Express:서버를 만들어주는 프레임워크이다.
+
+우리가 Express를 사용하는 이유는 안정적이고 매우 유명하기때문이다.
+첨단기술이아니다 새로운버전이아니다. -이러한말은 엄청안정적이고 거의 완성되었다는 뜻이다.
+ 
+#2.2 Installing Express with NPM
+
+npm=node package manager
+express같은걸 만들고 공유하기 위해서 다운로드 링크를 만드는방법이 있고 파일을 복사에서
+프로젝트 디렉토리에 붙여넣는 방법이있다. 하지만 좋은방법이 아니기 때문에
+중앙집중화된 개념이다. node.js와 관련된사람들이 각자의 패키지를 집어넣어놓는다.
+그리고 우리가 다운받을것을 넣어둔다.
+여기서 다운받고 여기서 업데이트가 가능하다.
+express는 월 12백만회 다운로드 되었다.
+react는 월 32만회, react native,electron도 있다.
+
+npm으로 프로젝트를 시작하려면 package manager로 사용하려면 npm이 정한방식으로 
+시작해야한다.
+-> npm init
+npm init을 하게되면 package.json파일이 생성된다.
+Json은 자바스크립트에서 정보를 담는 방식이다.
+
+npm install express- express를 이 디렉토리 안에 설치한다.
+설치하게 되면 package-lock.json과 node_modules가 설치된다. dpdencies가 추가된다.
+package가 살아남는 방법이다.
+
+package-lock.json: 신경쓰지말자
+node_modules: 우리가 막 다운로드 받은거다 npm을 통해 다운받은것이다.
+
+추가로 기억할것
+package.json을 갖는것은 매우좋은일이다.(협업할때) 왜냐면 node_module을 일일이 줄필요가 없기 때문이다.
+
+
+
+
+
+
+
+
+
+
+
