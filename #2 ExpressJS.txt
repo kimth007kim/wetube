@@ -46,9 +46,22 @@ node_modules: 우리가 막 다운로드 받은거다 npm을 통해 다운받은
 package.json을 갖는것은 매우좋은일이다.(협업할때) 왜냐면 node_module을 일일이 줄필요가 없기 때문이다.
 
 
+#2.3 Your First Express Server
+.gitignore- 깃에 올리고싶은것만 올릴수 있게해주는 파일이다.
+package-lock.json:package에 security이 관련되어있다.
 
+Expressjs.com에 들어가서 Routing에 있는 문구를 복사 붙여넣기한다.
+require의 뜻은 어디선가 node-module을 가져오는 것이다.
+이경우에는 express라는이름의 폴더를 내파일속에서 찾으려고한다.
+만약없으면 node_module에서 찾는다.
+node-js에 장점 :모든것이 블럭단위로 구성되어있음 설치-require-import하면된다.
 
+const express =require("express");	//express를 import하기
+const app = express();		//app 변수를 선언해서 express를 실행하기
 
+index.js를 node로 실행하고싶지않어서 package.json을 중앙 컨트롤 타워로 만들것이다.
+내 app이 해야할것을 package.json에 넣을것이다.
+package.json에 scripts부분에다가 "start": "node index.js"라고 입력을 해놓으면 npm start만으로도 서버를 실행할수 있다.
 
 
 
