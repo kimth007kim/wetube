@@ -87,3 +87,90 @@ app.get("", something)메소드는 인자가 두개 들어간다.
 첫번쨰에는 주소가 들어가고
 두번쨰에는 그것을 실행할 함수가 들어간다.
 서버를 ES6로 만들것이다.
+
+
+
+#2.5 ES6 on NodeJS using Babel
+
+Babel이란 무엇일까?
+기본적으로 바벨은 최신의 javascript코드들의 예전의 무난한 javascript코드들로 바꿔준다.
+왜바꾸냐면 브라우저에서는 최신의 javascript코드들을 이해 못할때가 있기 때문이다.
+바벨은 여러가지 방법으로 사용이 가능한데 많은 loader가 있다.
+우리가 사용할 방법은 Babel node이다 .
+다운하는 방법은-
+npm install @babel/node
+
+또Babel이 가지고 있는게있는데 Stage를 가지거 있다. stage3이면 브라우저한테 절반만 받아들여 질것이다..
+만약 stage0을 사용하게 된다면 완전히 실험적인걸 얻게 될것이다.
+
+우리가 사용할 것은 -env이다. 가장 최신버전이고 실험적인 버전은 아니다.
+다운하는 방법은-
+npm install @babel/preset-env
+
+만약 React를 한다면 다른preset이 있다. 왜냐면 Babel도 우선 React가 어떻게 작동하는지 알아야 하기 때문이다.
+우리는 .babelrc파일에 우리가 원하는 node.js와 JS와 관련된 필요한것들, 설정을 다 집어 넣을것이다.
+.bablerc 파일은 우리가 작업하고 있는 디렉토리에다가 만들면된다.
+
+*Babel의 동작과정
+1.Babel이 실행되기 전에 .babelrc파일을 찾아보고
+2.babelrc파일에 설정해둔 Preset을 읽고
+3.이해한다.
+
+*.babelrc 파일의 내용
+{
+  "presets": ["@babel/preset-env"]
+}
+*작동하는지 테스트해보려면?
+1 .const express = require('express'); 대신에 최신의 js버전인 import express from "express";
+(둘은 같은내용이다.)
+2. package.json에다가 "scripts": node index.js를 babel-node index.js로 바꾼다.
+3. 이렇게 실행 하게된다면 바벨이 못생긴 코드로 바꾸게 될것이다.
+4. 그런다음 node.js로 실행 할것이다.
+이렇게 하면 이런에러가 뜨는데
+Cannot find module '@babel/core'
+그러면 npm install @babel/core를 해주면된다.
+
+화살표 함수를 이해해보자
+-함수란 무엇일까? 함수는 원하는 작업을 수행하기 위해만들어 놓은 코드 블록이다.
+ES6이전에 함수를 표현하는 방법에는 무엇이있을까>
+1.함수 선언
+function foo(){} 
+
+2.함수 표현식
+const foo = function(){}
+함수의 이름이 없는 익명함수를 변수에 할당하는 방식이다.
+
+화살표함수는 왜쓸까?
+함수를 표현해지는것이 간단해지기 때문에 사용한다.
+그리고 화살표 함수는 항상 익명함수이다.
+
+1. function 키워드를 생략할 수있다.
+2. 함수의 매개변수가 1개라면 괄호()를 생략할수 있다.
+3. 함수 바디가 표현식 하나라면 중괄호와 return 문을 생략할수 있다.
+
+function handleProfile(req, res) {
+   res.send("you are on my profile");
+ }
+const handleProfile = (req, res) =>
+ res.send("you are on my profile");
+로 바꿀수있다.
+
+만약에 project에 필요한 것(depedencies)에 추가되는것 말고 개발자로 살면서 필요한것들을 
+npm에서 install할때는 npm install ~~ -D를 사용하면된다.
+그렇게되면 package.json파일에 "devDependencies"에 추가 된다.
+
+nodemon: node.js소스 수정시 자동으로 서버를 재시작해주는 프로그램
+nodemon이라는 패키지를 설치할것이다. 
+그래서 npm install nodemon -D를 해준다 그리고 script에 babel-node index.js를 
+nodemon --exec babel-node index.js로 수정해준다.
+
+
+
+
+
+
+
+
+
+
+
