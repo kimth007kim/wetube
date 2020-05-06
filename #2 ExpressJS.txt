@@ -46,6 +46,7 @@ node_modules: 우리가 막 다운로드 받은거다 npm을 통해 다운받은
 package.json을 갖는것은 매우좋은일이다.(협업할때) 왜냐면 node_module을 일일이 줄필요가 없기 때문이다.
 
 
+
 #2.3 Your First Express Server
 .gitignore- 깃에 올리고싶은것만 올릴수 있게해주는 파일이다.
 package-lock.json:package에 security이 관련되어있다.
@@ -65,6 +66,24 @@ package.json에 scripts부분에다가 "start": "node index.js"라고 입력을 
 
 
 
+ #2.4 Handling Routes with Express
 
+http,브라우저의 동작 방식
+인터넷에서는 두개의 주요한 동사가 있는데
+하나는GET, 하나는 POST이다.
+내가 웹사이트에가면 URL을 적는데 브라우저가GetMethod를 실행한다. 기본적으로 브라우저가 페이지를 읽어온다.
+우리가 로그인을 하게되면 POST method를 이용해서 브라우저가 정보를 전달한다.
 
+request는 있는데 뭔가 응답을 하게 해야한다.
+일반적으로 서버가 하는 일은 HTML로 응답하게 하는것이다.
+뭔가 응답하게 하는 방법은 쉽다. 이게 express가 늘 하는일이기도 하다.
 
+만약에 함수가 이렇게 존재한다면 function handleExmple(req,res){}
+request object ,response object
+request object:우리가 정보를 얻고자하면 누가 페이지를 요청했나 어떤종류의 데이터가 페이지에 전송되었나 알아낼때
+예를 들어, 아이디와 패스워드를 전송하면 POST방식으로 전송한다면 서버에는 request object로  그정보를 알아낼수있다.
+
+app.get("", something)메소드는 인자가 두개 들어간다. 
+첫번쨰에는 주소가 들어가고
+두번쨰에는 그것을 실행할 함수가 들어간다.
+서버를 ES6로 만들것이다.
