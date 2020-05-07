@@ -165,10 +165,33 @@ nodemon이라는 패키지를 설치할것이다.
 nodemon --exec babel-node index.js로 수정해준다.
 
 
+#2.6 Express Core: Middlewares
+
+*내가 일단 저장하고 재시작하면 Babel node가 감지하고 재시작해서 두번 실행되는것이다.
+scripts: "start": "nodemon --exec babel-node index.js --delay 2"
+--delay 2를 뒤에 붙이게 된다면 2초뒤에 시작한다.
+
+*express를 할때 middleware라는 이름의 녀석을 알아야한다. 어려운 express의 내용이다.
+middleware:처리가 끝날때까지 연결되어있는것이다. 유저와 마지막 응답사이에 있는것이다.
+
+*middleware 함수들은 매개변수를 원래가지는것 (req, res) 말고도 하나를 더가진다. (req,res,next).
+다른함수들은 보통은 매개변수로 next를 가지지 않는다. 왜냐하면 마지막으로 도달하는 함수이기 때문이다.
+
+*MiddleWare의 예시
+const betweenHome = (req, res, next) => {
+  console.log("I'm between");
+  next();		//next를 호출해야 매개변수로 들어간 인자인 handleHome을 호출할수있다.
+};
+middleware는 내가 원하는만큼 가질수있다. 파일을 전송할때 중간에서 가로챌수도있다. 모든접속에대한 로그를 작성하는 
+미들웨어도 작성할수이따.
 
 
+app.use(betweenHome);
+미들웨어를 사용할건데 웹사이트에서 일어나는 모든것에 대해 적용한다.
 
-
+express에서는 문장의 순서가 중요하다
+접속이 있으면 위에서 아래로 실행한다. 미들웨어를 제일 위에다 넣어야지 반환해서 돌아오기 떄문에
+제일위에다가 작성하는 것이 좋다.
 
 
 
