@@ -193,7 +193,76 @@ express에서는 문장의 순서가 중요하다
 접속이 있으면 위에서 아래로 실행한다. 미들웨어를 제일 위에다 넣어야지 반환해서 돌아오기 떄문에
 제일위에다가 작성하는 것이 좋다.
 
+#2.7 Express Core: Middlewares part Two
+
+Morgan이라는 middleware를 설치해보자
+-npm install morgan
+logging에 도움을 주는 middleware이다:로깅이란 어디서 무슨일이 일어났는지이다.
+설치하고 해야할 일들
+1.이렇게 다운을 받게되면 package.json파일에 depedency부분에 추가된다 
+2.js파일에다가 import 해줘야한다.
+-import morgan from "morgan";
+3.인자와 함께 사용한다. 미들웨어로 morgan을 tiny라는 인자를 이용해서
+-app.use(morgan("tiny")); 
+
+이외에도 많은 미들웨어가 있다. 
+
+우리는 helmet이라는 middleware를 설치해보자
+-npm install helmet
+node.js의 안전성을 추가해준다(보안)
+
+*middleware로 연결을 끊어버리는방법
+middleware가  route전에 response를 보낸다면  연결이 일어나지 못한다.
+
+cookie-parser와 body-parser도 설치할것이다.
+-npm install body-parser
+-npm install cookie-parser
+cookie와body를 다루는 것을 도와준다.
+body로부터 정보를 얻을수 있게도와준다.
+cookie에 유저정보를 저장할것이다 session을 다루기 위해서
+기본적으로 form을 채워서 나에게 전송한다면 서버를 의해서  특정한형태로 받아져야만한다.
+내가 하려는건 form을 받으면 그데이터를 갖고있는 request object에 접근하기 원한다.
+
+body-parser에는 정의해야하는 옵션이 있다. json,text,urlencoded
+우리가 무엇을 전송해야하는지 알아야하기 때문이다.
+이게 서버가 유저로부터 받은정보를 이해하는 과정이다.
+사용예시
+app.use(bodyParser.json());
+app.use(bodyParser.urlencode({ extended: true }));
 
 
 
+#2.8 Express Core: Routing
 
+init에 뭘할거냐면 init.js에서 application을 호출한다.
+app object를 init.js에 줘야한다.
+
+자바스크립트 ES6에는 흥미로운게게있는데 모듈이라는게 있어서 다른파일에서의 코드를 가져다가 쓸수있다.
+export default app; 누군가 app을 불러올때 app을 넘겨주겠다는 이야기이다.
+
+express에서 router는 route들의 복잡함을 쪼개주는데 사용할수있다.
+/user/logout ,/user/passwdchange 이럴때 라우터를 사용할 수가 있다.
+router.js를 만들고 expresss를 import한다.
+
+export const userRouter = express.Router();
+-userRouter라는 변수로 담아서 export한다.
+
+export default app				//만약에 default로 export를 하게 된다면 
+import express from "express"; 		//이런식으로 import할수있다.
+따라서 
+export const userRouter = express.Router(); 	//이친구는
+import {userRouter } from "./router";		//이렇게 import 해주어야한다.
+
+app.use() 	메소드의 의미는?		//누군가 /user 경로에 접속하면 이라우터의
+					// router.js 에 있는 모든 경로를 사용하겠다는뜻
+
+#2.9 MVC Pattern part One
+MVC는 Model ,View, Control을 의미한다.
+model:데이터 데이터베이스이다.
+view:데이터가 어떻게 생겼냐 template인데 아직 안배웠음
+control:데이터를 찾는함수이다. url을 이용해 실행하는 함수가 Controller이다.
+
+export const videoRouter = express.Router();	//오직 이변수만 export한다.
+export default videoRouter; 			//파일로 export한다.
+
+누군가가 "/" url을 다뤄야한다.
