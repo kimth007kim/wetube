@@ -297,9 +297,34 @@ wetube에서는 video, 비디오를 업로드할 users 만들게된다.
 
 
 
+#2.12 Recap
 
+1.init.js
+init.js에는 app.js에서 import한 application이 있다.
 
+2.app.js
+application 관련 코드들은 app.js파일에 담겨있다.
+express 를import했고, express를 실행한 결과를 app 상수로 만들었다. 그리고 middleware들을 추가했다.
+사용한 middleware
+ 1)cookieParser는 cookie를 전달받아서 사용할 수 있도록 만들어 주는 미들웨어다. 사용자 인증 같은곳에서 쿠키를 검사할때 사용
+ 2)bodyParser는 사용자가 웹사이트로 전달하는 정보들을 검사하는 미들웨어다. request정보에서 form이나 json형태로 된 body를 검사
+  -아바타의 사진이나 비디오를 업로드 할 때, 제목이나 댓글 같은 정보를 전달할때 form에 담아서 업로드해야함
+ 3)helmet은 application이 더 안전하도록 만들어 준다.
+ 4)morgan은 application에서 발생하는 모든일들을 logging 하는것이다.
 
+3. Router :그리고 라우터 3개를 사용할것이다. 
+globalRouter: /home, /search, /join, /login, /logout URL이 담겨있다.
+userRouter: /user/주소 들이 들어가있다.
+videoRouter:  /video/에관련된 주소들이 들어가있음
+routes.js: 모든 주소들을 정의해놨다. 한파일이 바뀌면 모두 적용되도록 할수 있다.
+
+4. Controller:모든 router의 로직들은 모두 userController나 videoController에 정의되어있음
+controller안에 들어가 있는것들은 모두 함수들이다 . (Join,Login,Logout,User Detail 같은것들을 리턴)
+
+다음 강의에서는 pug라는걸 설치할것이다. pug는 express에서 view를 다루는 방식중 하나이다.
+express로 HTML을 보여줄수 있다. res.send 대신에 실제 HTML을 전달할것이다. CSS같은 것들로 멋지게 꾸밀수있다.
+MVC에서 V부분이다. C부분은 이미했고 ,pug로 V부분을 할것이다.
+pug는 사용하기 쉽고 ,express에 설치하기도 쉽다. HTML을 예쁘게 만들어준다.
 
 
 
