@@ -14,9 +14,8 @@
   },
   "homepage": "https://github.com/kimth007kim/wetube#readme",
   "dependencies": {
-    "@babel/core": "7.9.6",
-    "@babel/node": "7.8.7",
-    "@babel/preset-env": "7.9.6",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.6",
     "body-parser": "1.19.0",
     "cookie-parser": "1.4.5",
     "express": "4.17.1",
@@ -27,6 +26,7 @@
     "start": "nodemon --exec babel-node init.js --delay 2"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.6",
     "nodemon": "2.0.3"
   }
 }

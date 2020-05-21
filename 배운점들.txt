@@ -1,0 +1,5 @@
+package.json이 있으면 다른컴퓨터에서 프로젝트를 다운받고 depedency를 package.json에서 참고해서
+npm install을 하게 되면 node-module에 의존성이 자동으로 추가되게 된다. 
+
+해야할것들
+1. vscode를 니콜라스랑 똑같이 만들기
