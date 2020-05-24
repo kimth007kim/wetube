@@ -327,7 +327,30 @@ MVC에서 V부분이다. C부분은 이미했고 ,pug로 V부분을 할것이다
 pug는 사용하기 쉽고 ,express에 설치하기도 쉽다. HTML을 예쁘게 만들어준다.
 
 
+#2.13 Installing Pug
+view engine이다.
+다운하는 방법은
+-npm install pug
 
+set함수에는  name과 value가 필요하다.
+view engine 설정을 바꿀건데 설정의 기본값은 undefined이다.
+그래서 view를 pug로 설정하고 싶다면
+app.set("view engine", "pug") 로 설정하면 된다.
 
+pug와 express에는  view 파일들의 위치에 관한 기본 설정들이 있다.
+application의 화면이 담긴 디렉토리나 디렉토리의 배열을 입력하면됨.
+html파일을 저장해야하는 폴더의 기본 값은 프로젝트의 작업 디렉토리 +'/views' 이다.
+그래서 views 라는 폴더를 만든다.
+그리고 home을 만들건데 확장자는 html대신에 pug를 이용하면된다.
+home.pug가 생성이 완료되면 videoController.js에 들어가서
+res.send("Home") 을 res.render("home")으로 바꾸어준다. 완료!
+
+지금까지는 HTML,CSS에 대해서만 알고 있었는데, 계속 header,footer같은 부분을 복붙해야하기 
+떄문에 못생겼었다.
+express에서 pug를 사용한다면 이 문제를 쉽게 해결할 수 있다. pug는 이제
+시작일 뿐이다.
+
+다음 비디오 에서는 template 만들어 볼것이다. res.send 대신에 모두 res.render를 사용할것이다.
+다음 비디오에서는 layout을 이용해 html을 멋지게 만드는것을 배울것이다.
 
 
