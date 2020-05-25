@@ -13,7 +13,7 @@ const USER_DETAIL = "/:id";
 const EDIT_PROFILE = "/edit-profile";
 const CHANGE_PASSWORD = "/change-password";
 
-//videos
+//Videos
 
 const VIDEOS = "/videos";
 const UPLOAD = "/upload";
