@@ -495,10 +495,29 @@ ex) form(action=routes.search, method="get")
 
 
 
+#2.19 Join : Log In HTML
 
 
+꿀팁
+퍼그에서 텍스트로 시작하고싶으면 |를 먼저 입력하면된다.
+
+우리는 어떤 페이지를 만들어야 할까?계획을 짜보자
+
+Home페이지를 만들어야한다.
+Home 화면에 .videos (div이다) 를 추가하고  그안에 h1 태그에 video 텍스트를 추가
+
+join페이지 작업은 form을 넣어야한다. 우선 .form__container (div이다) 그 안에 form을 추가한다.
+.form__container
+    form(action="/login",method="post");
+여기서 method 를 post로 하는 이유는, 만약에 method를 get으로 하면 모든정보가 보이게 되기 때문이다.
+
+그리고 로그인,회원가입 폼을 만든후에는 partial을 만들것이다.
+만드는 이유는 button을 두개, 아니 만들고 싶은 만큼 만들기 위해 partial을 만들것이다.
+버튼 하나는 깃헙계정으로 로그인하기 
+그리고 다른버튼은 페이스북 계정으로 로그인하기 이다.
 
 
+그리고 CSS에서 BEM에대해서 공부해보도록 하자.
 
 
 
