@@ -508,7 +508,7 @@ Home 화면에 .videos (div이다) 를 추가하고  그안에 h1 태그에 vide
 
 join페이지 작업은 form을 넣어야한다. 우선 .form__container (div이다) 그 안에 form을 추가한다.
 .form__container
-    form(action="/login",method="post");
+    form(action=routes.login,method="post");
 여기서 method 를 post로 하는 이유는, 만약에 method를 get으로 하면 모든정보가 보이게 되기 때문이다.
 
 그리고 로그인,회원가입 폼을 만든후에는 partial을 만들것이다.
@@ -517,11 +517,39 @@ join페이지 작업은 form을 넣어야한다. 우선 .form__container (div이
 그리고 다른버튼은 페이스북 계정으로 로그인하기 이다.
 
 
-그리고 CSS에서 BEM에대해서 공부해보도록 하자.
+그리고 CSS에서 BEM에대해서 공부해보도록 하자.(내가 알아야할 내용이다.)
 
 
 
 
+#2.20 Change Profile HTML
+
+우리는 editProfile을 작업을 하고있는데 userDetail을 가리킨다.
+왜냐하면 routes.js에서 USER_DETAIL = "/:id"라고 선언했는데 /edit-profile을 id로 보기때문이다.
+
+그러면 우리는 userRouter.js로가서 
+userRouter.get(routes.userDetail, userDetail):
+userRouter.get(routes.editProfile, editProfile);
+userRouter.get(routes.changePassword, changePassword);
+이렇게 되어있는것을
+userRouter.get(routes.editProfile, editProfile);
+userRouter.get(routes.changePassword, changePassword);
+userRouter.get(routes.userDetail, userDetail):
+이렇게 순서를 바꿔주면 문제가 해결이 된다.
+
+그리고
+extends layouts/main
+
+block content
+    .form-container
+        form(action=routes.editProfile,method="post")
+            label(for="avatar") Avatar,
+            input(type="file", id="avatar", name="avatar")
+            input(type="text",placeholder="Name",name="name")
+            input(type="email",placeholder="Name",name="email")
+            input(type="submit", value="Update Profile")
+        a.from-container__link(href=routes.changePassword) Change Password
+editDetail.pug파일을 이렇게 수정해줬다.
 
 
 
