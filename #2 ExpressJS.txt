@@ -551,5 +551,61 @@ block content
         a.from-container__link(href=routes.changePassword) Change Password
 editDetail.pug파일을 이렇게 수정해줬다.
 
+ #2.21 Home Controller
+
+이전강의와 이번강의에 공백이 좀 있음
 
 
+이제 다음에는 전체 애플리케이션의 흐름을 가짜로 한번 만들어볼것이다. 아직 데이터베이스를 이용해 실제 데이터를
+넣기 전이니까 가짜 정보를 넣어서 템플릿을 완성할것이다. 그렇게한다면 이제 어떤 일이 어떻게 발생하는지 알수 있다.
+그 후에 데이터베이스를 이용해 실제 정보를 추가하고 사용자 인증 기능도 구현이 가능할것이다.
+
+지금 화면을 꾸미는 작업을 하면 html, css 같은걸로 헷갈릴 수있으니까 아직안했음
+
+문제가 하나있다. routes.js에 있는 라우트들은 express와 잘맞는다. express는 /:id/edit 같은것을 이해할수 있다.
+문제가뭐냐면 .../videos/1/edit으로 가본다.
+Delete video 버튼에 링크가 검사를 통해서 보면 /videos/:id/delete로 되어있다. 여기 /:id 에는 url에 있는 값인
+1이 실제로 들어가야한다.
+
+처음부터 보면 어느하나는 express에 값을 전달하고 있고, 어느하나는 브라우저에 바로 값을 전달하고있다.
+우선 home화면을 보면 video 목록을 보여줘야한다.
+가짜 데이터를 만들어서 보여줄것이다. 데이터베이스를 만들기 전이기때문이다. 
+Nicolas는 항상 이렇게한다. 데이터 베이스에 무엇을 추가해야할지 설정을 하기전에 빠르게 수정을 하고싶기 때문이다.
+가짜 정보를 위한 db.js 파일을 하나 만들자.
+
+
+export const videos = [		//export를 붙여서 다른 파일에서 import를 가능하게해준다.
+  {
+    id: 3232423,
+    title: "Video awesome",
+    description: "This is something I love",
+    views: 24,
+    videoFile: "https://archive.org/details/BigBuckBunny_124",
+    creators: {
+      id: 121212,
+      name: "Nicolas",
+      email: "nico@las.com",
+    },
+  },
+];
+db.js파일은 비디오에 들어갈 내용을담은 배열이다.
+
+만들고나서 videoControllers의 home에서 video목록을 받아서 render 함수에 전달하자
+db를 import 해야한다. 우선 videos를 export 해야한다.
+
+그리고나서 import { videos } from "../db";를 videoControllers 최상단에 붙여준다.
+
+home화면에 접속하면 video목록을 받아올것이다.
+
+그리고 home.pug에 다음과 같은 문구를 추가한다.
+ each video in videos
+            h1= video.title
+videos 배열에서 하나씩 video를 처리하는 방식이다.
+
+이렇게되면 home controller에서 home화면에 videos 배열을 전달했다.
+templates의 videos는 cotroller에서 전달한 video와 이름이 같아야한다.
+video(변수)는 각각의 값(id,name 등등)을 가지고 있다.
+video(변수)는 videos(배열)에서 iteration(반복)하면서 각 값 하나씩을 가진다.
+
+다음 비디오에서는 video의 title말고도 viwe와 file도 표시하는걸 해볼것이다.
+실제 video를 표시하는 div를 만들것이다.
