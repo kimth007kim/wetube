@@ -609,3 +609,39 @@ video(변수)는 videos(배열)에서 iteration(반복)하면서 각 값 하나�
 
 다음 비디오에서는 video의 title말고도 viwe와 file도 표시하는걸 해볼것이다.
 실제 video를 표시하는 div를 만들것이다.
+
+
+#2.22 Home Controller part Two
+
+이제 우리는 화면에 비디오를 추가했다. 그 다음에는 다른 곳 들에서 사용할 HTML코드를 만들것이다.
+예를 들어 home페이지에서는 비디오가 한칸으로 보이겠지만, 누군가의 profile페이지에서도 그 비디오를 볼수있어야한다.
+HTML을 재활용할것이다 비디오 블록 html 코드를  만들것이다.
+웹 사이트에서 계속 반복되는 코드를 복사-붙여넣기 하지않고 재활용하는 방법으로 이방법을 mixin이라고 한다
+
+
+mixins라는 폴더를 만들고 그아래에 videoBlock.pug를 만들어준다
+여기서 부터는 지금까지와는 다르다. html 코드를 처음부터 작성하지 않을 것이다.
+
+mixin이라고 적고, 그 다음에는 mixin의 이름을 적어줘야한다. 여기에는 video라고 할것이다.(이름은 아무렇게나 적어줘도 된다.)
+()가 존재하고 mixin은 pug의 함수의 일종이다. mixin에는 인자가 하나 필요하다. 인자의 이름을 video라고하고, 기본값은 {}라고 하자.
+기본적으로 빈 객체이다.
+
+
+mixin videoBlock(video ={})
+    h1=video.title
+
+이 mixin에 인자가 입력되면, 그 객체의 이름을 video라고 한다. 객체가 mixin에 입력되면,
+그 객체의 title을 받아와서 화면에 표시하는것이다.
+
+그다음에 home.pug에 each item in videos 밑부분에 
++videoBlock({}) 을 추가한다 그후에
+
+ +videoBlock({
+              title:item.title,
+              description:item.description
+          })
+이렇게 입력한다. 이렇게 되면 videoBlock으로 전달되어서 이 함수를 실행시킬거다.
+그리고 그 함수는 html내보낸다.
+
+각각 다른정보를 가지지만 같은 구조를 가지는 데이터를 표시하기 위한 코드를 캡슐화 했다. 이게 mixin을 사용하는 이유이다.
+다른 정보, 같은 구조

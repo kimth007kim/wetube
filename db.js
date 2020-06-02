@@ -4,7 +4,8 @@ export const videos = [
     title: "Video awesome",
     description: "This is something I love",
     views: 24,
-    videoFile: "https://archive.org/details/BigBuckBunny_124",
+    videoFile:
+      "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4",
     creators: {
       id: 121212,
       name: "Nicolas",
@@ -14,9 +15,10 @@ export const videos = [
   {
     id: 124321414,
     title: "Super awesome",
-    description: "This is something I love",
+    description: "The moment that you tell me love",
     views: 24,
-    videoFile: "https://archive.org/details/BigBuckBunny_124",
+    videoFile:
+      "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4",
     creators: {
       id: 121212,
       name: "Nicolas",
@@ -26,9 +28,10 @@ export const videos = [
   {
     id: 346354254,
     title: "Hyper awesome",
-    description: "This is something I love",
+    description: "Class leave forever",
     views: 24,
-    videoFile: "https://archive.org/details/BigBuckBunny_124",
+    videoFile:
+      "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4",
     creators: {
       id: 121212,
       name: "Nicolas",
@@ -38,9 +41,10 @@ export const videos = [
   {
     id: 89097897,
     title: "BEST ALL",
-    description: "This is something I love",
+    description: "Just Do it",
     views: 24,
-    videoFile: "https://archive.org/details/BigBuckBunny_124",
+    videoFile:
+      "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4",
     creators: {
       id: 121212,
       name: "Nicolas",
