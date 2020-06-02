@@ -645,3 +645,71 @@ mixin videoBlock(video ={})
 
 각각 다른정보를 가지지만 같은 구조를 가지는 데이터를 표시하기 위한 코드를 캡슐화 했다. 이게 mixin을 사용하는 이유이다.
 다른 정보, 같은 구조
+
+
+
+#2.23 Join Controller
+
+이제 다음으로 search 화면을 작업할것이다. search도 home화면과 거의 비슷하다.
+home화면과 비슷하게 search화면에서도 비디오가 뜨게 만들어보았다.
+ each item in videos
+          +videoBlock({
+              title:item.title,
+              views:item.views,
+              videoFile:item.videoFile
+          })
+이 문구를 똑같이 사용해주고 마지막으로 최상단에
+
+include mixins/videoBlock
+인클루드 시켰다.
+
+다음에는 Join 화면을 바꿔보자. 누군가가 회원 가입을 하면 자동으로 Login을 하고나서 
+Home 화면으로 이동하고싶다.
+로그인을 할 때, userController를 사용할것이다. join부터 시작해보자
+userController에 있는 join을 두개로 나눌것이다. 
+getJoin과 postJoin으로 그리고 globalRouter.js에서도
+globalRouter.get(routes.join,join)을
+
+globalRouter.get(routes.join,getJoin);
+globalRouter.post(routes.join,postJoin);
+이렇게 두개로 쪼개서 만들어준다.
+
+그리고 원래 우리가 join.pug를 설계할때
+form(action=routes.join, method="post")이렇게 설계 해놓았다 이뜻은
+method가 post인 /join 경로에서만 작동하는것이다.
+
+그리고 만약에 bodyparser를 쓰지않으면 우리는 무슨정보를가져오는지 알수없다.
+그래서 bodyparser를 써야한다.
+
+그리고 회원가입을 하게되면 req.body정보가 저장된다.
+그래서 우리는 req.body의 정보를 가져와야한다.
+ECMAScript6를 이용해서 req 안에 있는 body에서 name, email, password,passowrd 2를 가져올것이다.
+ const {
+    body: { name, email, password, password2 },
+  } = req;
+이렇게 ECMAScript6를 이용해서 req안에 있는 body에서 정보를 가져왔다.
+가져온 정보에서 password와 password2가 같은지 체크해야한다. 다르면 로그인 시킬수없다.
+가짜 액션이지만, 그래도 체크를 할것이다. 만약 password와 password2가 다르다면, 
+잘못되었다는 상태코드를 전달 할것이다. 상태코드(status code)는 인터넷이 서로 어떻게 상호작용하는지
+표시하는것이다. 또 상태코드는 웹사이트가 이해할수 있는 기본코드이다.
+ex)200 = 괜찮은것, 204= 내용없음 403= 금지됨 400= 잘못된 요청
+그러면 우리는 res에 상태코드를 전달할것이다. password가 서로다를때 400으로 상태코드를 전달할것이다.
+res.status(400); 이렇게만 적어주면 끝난다.
+
+완성본
+
+export const postJoin = (req, res) => {
+  const {
+    body: { name, email, password, password2 },
+  } = req;
+  if (password !== password2) {	//password와 password2가다르면
+    res.status(400);			//잘못된요청을 사이트에전달
+    res.render("join", { pageTitle: "Join" });	// 그리고 join페이지로이동
+  } else {				//만약의 위의 경우가 아니라면
+    res.redirect(routes.home);		// routes.home으로 redirect함(요청의 경로를 재지정함)
+  }
+};
+
+다음비디오에서는 login 화면에도 같은 작업을 할것이다.
+그리고 사용자가 로그인했는지 아닌지 가짜로 만드는 법을 배울것이다. 
+
