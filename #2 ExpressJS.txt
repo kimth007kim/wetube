@@ -713,3 +713,86 @@ export const postJoin = (req, res) => {
 다음비디오에서는 login 화면에도 같은 작업을 할것이다.
 그리고 사용자가 로그인했는지 아닌지 가짜로 만드는 법을 배울것이다. 
 
+
+
+#2.24 Log In and User Profile Controller
+Join은 완료했고, 이제 Login을 작업을 해보자. Login도 비슷한 작업을 해야한다.userController에 postLogin함수를 만들자
+그리고 원래있단 const login을 const getLogin으로 바꾸자. 
+로그인에서는 할일이 많지 않다 로그인을 하면 그냥 로그인 버튼만 클릭하는것이다. 만약 로그인에 성공했다면 , routes.home으로 redirect하면된다.
+join의 흐름과 같다. 나중에는 사용자 비밀번호가 데이터베이스에 있는것과 같은지 검사해야한다. 지금은 일단 그냥 redirect하자,
+만약 로그인에 에러가 있다면, 다시 login화면을 표시해야한다. 지금은 이정도면 충분하다.
+globalRouter를 열어서, 이전의 login 함수의 이름을 getLogin으로 바꾸자. 그리고 import
+postLogin도 import하고 라우트를 추가하자.
+
+여기까지 완료하면 공개 페이지에 대한 작업은 다 된것같다. 이제 header template으로 가서 이 navigation을 조금 수정하자
+
+header. pug템플릿에서 if !user.isAuthenticated		//(로그인이 되었는지 확인하는것)을 추가할것이다
+user는 아직존재 하지 않는 변수이다. 이제 이걸 가짜로 만들어 볼것이다. 로그인이 되었는지 알려주는 변수이다.
+
+middleware.js에서 localsMiddleware함수안에
+res.locals.user={
+	isAuthenticated: true,
+	id:1
+};
+을 추가 할것이다.
+
+이렇게해서 header.pug에서
+ if !user.isAuthenticated
+                li
+                    a(href=routes.join) Join
+                li
+                    a(href=routes.login) Log In
+            else
+                li 
+                    a(href=routes.upload) Upload
+                li 
+                    a(href=routes.userDetail(user.id)) Profile
+                li 
+                    a(href=routes.logout) Log out
+
+1)로그인이 되지않았으면
+-join과 Login을 출력
+2)로그인이 되었다면
+-upload, profile, logout을 출력시킬수 있게되었다.
+
+
+문제가 하나있다. profile링크를 누르게되면, /:id 주소로 이동하게된다.  왜 이동하는지 페이지를 검사해보게 된다면
+<a href="/:id>Profile</a> 이렇게 되어있다.
+express는 이해하지만 , HTML은 저 routes를 이해하지못하기 때문에 발생하는 문제이다.
+만약 user에 id가 있다면.. id 가 5라고 생각하고 이 링크를 클릭하면
+id가 포함된 주소로 가도록 하고싶다.
+현재 routes.js에서의 userDetail은
+ userDetail: USER_DETAIL 이렇게 되어있다.
+이것을 이런식이아니라 이렇게 함수로 바꿔보자.
+userDetail: (id) => {		//이함수는 id를 인자로 입력받아서.
+    if (id) {			//만약 id가 있다면
+      return `/users/${id}`;		///users/${id}를 리턴하자.
+    } else {			//만약에 id가 없다면
+      return USER_DETAIL;		// USER_DETAIL을 리턴하기로하자.
+    }
+  },
+
+이렇게 routes.js만 수정할것이 아니고 userRouter도 수정해야한다.
+userRouter.get(routes.userDetail, userDetail);
+ 이렇게 선언만 하면 안되고,
+userRouter.get(routes.userDetail(), userDetail);
+ 이렇게 바꾸어서 함수를 실제로 실행해야한다.
+이 경우에는 id를 인자로 해서 실행하지 않으니까, /:id를 리턴 받을것이다.
+
+하지만 템플릿에서는 인자 없이 실행하면 안된다. user.id를 인자로 입력하자.
+ a(href=routes.userDetail(user.id)) Profile
+
+우리가 만든 다른 URL 중에서도 바꿔야 할것들이 있다. id와 함께 실행해야 하는것들이 있기 떄문이다.
+videoDetail도 수정을 해줘야한다.
+routes.js에서
+videoDetail: VIDEO_DETAIL을
+
+videoDetail: (id)=>{
+	if(id){
+		return `/videos/${id}`
+	} else {
+     		 return VIDEO_DETAIL;
+},
+
+현재 가짜 데이터로 작업하고 있지만, 지금까지 좋아보인다. 이런 방식으로 하면 나중에 실제 데이터가 있을때 빠르게 작업할수 있다.
+왜냐하면. 데이터베이스 부분만 추가하면 된다.
