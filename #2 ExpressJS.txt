@@ -796,3 +796,62 @@ videoDetail: (id)=>{
 
 현재 가짜 데이터로 작업하고 있지만, 지금까지 좋아보인다. 이런 방식으로 하면 나중에 실제 데이터가 있을때 빠르게 작업할수 있다.
 왜냐하면. 데이터베이스 부분만 추가하면 된다.
+
+
+#2.25 More Controlers
+
+이제 로그인을 하면 Profile 페이지로 이동해서 사용자 정보를 확인 할수 있다.
+사용자 페이지는 잠시 이대로 둘것이다. 누군가가 비디오를 클릭하면 비디오 상세 페이지로 보이도록 하고싶다. mixin을 수정하자
+videoBlock.pug로가서 .videoBlck 클래스 밑에
+a태그를 추가하고 href=routes.videoDetail 을 써준다 함수의 인자로 video.id를 입력하자.
+.videoBlock
+	a(href=routes.videoDetail(video.id))
+
+그리고 home.pug로 가서 videoBlock을 사용하는 곳에서 인자를 입력할 때 id:item.id를 추가로 보내주자.
+ +videoBlock({
+	id:item.id
+	....
+)}
+이렇게 까지 완료하면 이 주소에 접근할수 없다는 에러가 뜬다.
+왜냐하면 videoRouter에서 videoRouter.get(routes.videoDetail,videoDetail);
+이렇게 되어있기 때문이다. 여기에서 videoDetail이 함수니까 실행을 해줘야한다.
+이렇게 하면 잘 동작한다. 
+
+이제 로그아웃을 보자. 로그아웃을 클릭하면 Log Out페이지로 가는것 대신에, 로그아웃 처리를 한 후에 home페이지로 redirect 되도록 하고싶다.
+userController에 logout을 보자, 페이지를 보여주는 대신에 주석을 달자
+그리고 우리는 logout.pug파일은 필요없으니까 삭제하도록하자. 원한다면 로그아웃을 할 지 다시 확인하는 페이지를 만들 수도 있다.
+upload 링크를 클릭해보자. upload 경로가 없다는 에러가 뜬다. 
+왜그러냐면 header를 보면 routes.upload로 이동하는 대신에 `/videos${routes.upload}` 라고 경로를 바꿔줘야한다. 이렇게하면 문제 해결
+upload 페이지 화면을 보자. 이 form은 /videos/upload로 가는 거니까, 이 요청에 응답할 수 있어야한다.
+그러므로 우리는 getUpload와 postUpload가 필요하다. videoController에 작업을 해야한다. 
+videoController.js에서  upload를 getUpload로 바꾸자. 그리고 postUpload를 추가하자
+postUpload에는 우선 body를 받아오자. 요청하는 정보들의 name이 무엇일까? upload.pug에 가서 확인을 해보자
+name= 이라고 된부분을 살펴보자 name=file,name=title,name=description이 있다.(file,title,description)
+req안에 있는 body에서 file,title,description을 가져오자 그리고 주석으로 할일 비디오 업로드및 저장이라고 적어놓았다.
+비디오를 업로드 한다고 생각해보자. 그러면 비디오에 해당하는 id를 가질수 있을 것이다. video가 새로 생성되고,생성된 데이터의 id를 가져오는것이다. 
+그리고 업로드 후에는 사용자를 새로 생성된 비디오 id에 해당하는 videoDetail페이지로 redirect 할것이다.
+정리하면 비디오업로그-> 새로운 id반환-> 업로드후에 videoDetail로 이동!
+
+routes.videoDetail 페이지로 redirect하자. routes를  import해야겠다.
+그리고 videoDetail 함수의 인자로 이 비디오의 id를 입력하자. 이건 가짜 데이터의 id이다.
+
+완료된 postUpload의 모습이다.
+export const postUpload = (req, res) => {
+  const {
+    body: { file, title, description },
+  } = req;
+  //To Do:Upload and save video
+  res.redirect(routes.videoDetail(56448611552423));
+};
+
+그리고 videoRouter.js로가서 여기에 있는 이 upload를 getUpload로 바꾸자
+videoRouter.get(routes.upload, upload); 
+videoRouter.get(routes.upload, getUpload);
+
+videoRouter.post(routes.upload, postUpload); post라우트도 이렇게 추가해주자
+
+여기까지 완료햐주면 Upload페이지로 이동해서 값들을 다시채워주고 업로드버튼을 눌러주면, video id에 해당하는 videoDetail 페이지로 이동시켜준다.
+이 ID는 내가 방금 업로드한 비디오의 id가 될것이다. 
+이제 보안을 신경써보자. 정보를 아무것도 입력하지 않고 Upload를 클릭해도 비디오 상세 페이지로 이동한다.  잘못된것이다.
+그러면 upload.pug파일에 있는 input에 모두 requried = true를 추가해줄것이다.
+그리고 똑같이 login.pug 파일과 join.pug파일에있는 모든 항목에도 똑같이 required = true를 추가해주자.
