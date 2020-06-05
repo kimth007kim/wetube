@@ -1,0 +1,36 @@
+#3.0 MongoDB and Mongoose
+MongoDB를 사용하는 기업은: facebook,google,EA,Nokia등등이 사용한다.
+이제 준비는 끝났고 MongoDB를 받으러 가보자.
+DB는 많이있지만 크게 두가지로 분류가 된다. SQL과 NoSQL로 나뉘어진다.
+MongoDB는 쩐다. MongoDB는 NoSQL로 분류된다.
+특징은 규칙이 적고 엄청 유연하다. 많은 부분을 수정할 수 있다. 반면, 어떤 사람들은 규칙이 너무 적고
+모든게 너무크고 어떤 부분에서 너무 실험적이어서 싫어한다. 그래서어떤회사는 쓰고 어떤회사는 사용하고 후회한다.
+MongoDB는 더 적은 규칙과 더 적은 절차로 작업이 가능한 데이터 베이스 이다.
+많은 사람들이 MongoDB를 사용하고있다. 엄청 가볍고 초보자들도 쉽게 다룰수 있기 때문이다. 사용하기 엄청 쉽고 직관적으로 작동한다.
+우리가 해야할일은 이 주소로 와서 무언가를 다운로드 받는게 아니다.
+
+홈페이지->MongoCE(Community Edition) 또는 Community Server을 들어간다.
+그리고 버전과 OS를 확인하고 다운로드한다,
+다 설치가 완료되면 콘솔창에 mongod를 쳐서 잘 설치 되었는지 확인한다.
+
+윈도우 10에서 다운로드 > 설치 후 mongod가 실행되지 않는다면 다음을 따라서 환경변수 추가를 해보세요.
+1. [내컴퓨터] 우클릭 > [고급시스템설정] > [환경변수(N)]
+2. 시스템변수 리스트 중 'Path'를 선택하고 편집을 선택한 후 'Mongodb의 설치경로￦bin'을 추가
+3. vscode 재실행 후 터미널에 'mongod'입력하면 해결된다.
+
+환경변수의 문제였다(해결됨)
+이렇게 mongodb를 설치하고나서 mongod 와 mongo 명령어가 동작을 한다면 정상적으로 설치한것이다.
+-명령어
+$mongo		//몽고db실행
+$exit		//몽고db종료
+여기 =까지 완료되었다면 Mongo를 JavaScript와 연결해보자. 두가지가 있는데 하나는 MongoDB이고 다른하나는 Javascript의 Node.JS이다.
+MongoDB는 C++이나 다른것으로 만들어졌기 때문에 Adapter가 필요하다.
+자바스크립트로 코드를 작성하고 싶으면 MongoDB로부터 Instruction을 받아야한다. 그리고 이걸 귀여운 Mongoose가 해줄것이다.
+NodeJS를 위한 멋진 MongoDB Object이다.
+설치하기 엄청 간단하다.
+npm install mongoose라고 치기만 하면된다.
+Database를 가지고 이용하려면 mongodb와 mongoose 둘다 필요로한다.
+
+그리고 같은서버에서 다양한 종류의 Database들을 사용할수 있다. 이 강의에서는 한가지만 사용할것이다.
+채팅을 만든다면 MongoDB는 적합한 Database가 될것이다. 왜냐하면 생성이 매우 빠르고 엄격하지 않기 때문이다.
+자 이제 필요한 두가지가 설치되었으니, 임시로 만들어 놓은 db.js를 지우고 진짜 MongoDB를 연결하자
