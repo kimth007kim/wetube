@@ -34,3 +34,55 @@ Database를 가지고 이용하려면 mongodb와 mongoose 둘다 필요로한다
 그리고 같은서버에서 다양한 종류의 Database들을 사용할수 있다. 이 강의에서는 한가지만 사용할것이다.
 채팅을 만든다면 MongoDB는 적합한 Database가 될것이다. 왜냐하면 생성이 매우 빠르고 엄격하지 않기 때문이다.
 자 이제 필요한 두가지가 설치되었으니, 임시로 만들어 놓은 db.js를 지우고 진짜 MongoDB를 연결하자
+
+#3.1 Connecting to MongoDB
+
+우리가 해야할것.
+첫번째로 Database에 관련된걸 하고, 어떤 유저에게나 영상을 보고, 검색하고 수정하고 삭제할 수 있게 할것이다.
+영상 업로드도 물론이다. 누구나 사용할수 있는 플랫폼 같은것이다. 그리고 CSS를 할것이다. 모든걸 이쁘게 만들고
+유저 프로필과 그 외에 엄청 간단한 것들을 위한 마지막 법칙을 추가할것이다. 이 application에서 유저 부분은 엄청 작은 부분이다.
+
+정리
+1. Database 관련 작업
+2. 누구나 사용할수 있게 만들기(업로드,시청)등등
+
+기능적으로 누구나 사용할수 있게 만들고 Front-end로 가서 좀 더 이쁘게 만들고 마지막에 유저 인증을 추가할것이다.
+이제 mongoose가 설치되었고 'dotenv'라는것을 설치할것이다.
+-npm install dotenv
+그리고 설치가 완료되면 db.js에서
+import mongoose from 'mongoose'
+라고 입력하자. 그리고 dotenv는 inport하지 않은 상태에서 왜 template가 필요한지 확인을 해보자.
+그리고 db.js에서 
+mongoose.connect();
+라고 입력하자. 여기서 우리한테 요청하는것은 string으로 된 Database이다. 어디에 Database가 저장되어있는지 알려주는것이다.
+Database의 URL을 적을것인데 그전에  콘솔창에 'mongo' 를 먼저 해보자. 그리고 콘솔창에 'mongod' 를 실행하자
+그리고 포트를 찾자.
+2020-06-06T23:14:40.617+0900 I  CONTROL  [initandlisten] MongoDB starting : pid=16512 
+port=27017 dbpath=C:\data\db\ 64-bit host=DESKTOP-I58M2RT 
+여기서 port=27017 이다. 그 다음으로 우리는 mongoose.connect안에다가 URL을 넣을것인데 순서는
+'mongodb://localhost:포트번호/Database이름' 순서이다. 그리고 다음인자는 왜 적냐면 새로운 버전의 mongoose는 이런식으로 Configuration을 보낼수 있다.
+그리고 인자들을 여기에 적어 놓는 이유는 이것들이 무슨역할을 하는지 알아서 그런게 아니라 내가 MongoDB를 사용할때 마다 물어봐서 그렇다(그렇게 중요하지 않다.)
+mongoose.connect("mongodb://localhost:27017/we-tube", { userNewUrlParser: true, useFindAndModify:false});
+
+그리고 다음으로 할것은 mongoDB와의 연결을 'db'로 저장한 후에 나중에 export 할것이다.
+const db = mongoose.connection;
+
+그리고 우리가 할것은 연결이 되었으면 되었다고 알려주고 안되면 왜안되는지 알려주는것이다.
+
+const handleOpen = () => console.log("✔ Connected to DB");			//연결됨을 알리는 함수
+const handleOpen = (error) => console.log(`❌ Error on DB Connection:${error}`);	//연결 안되면 왜안돼는지 알려주는함수
+
+db.once("open", handleOpen);						//한번실행한다 오픈되면 handleopen을 
+db.on("error", handleError);							//error가 뜨면 handleError함수를 실행
+
+그리고 init.js에서 db만 임포트해준다.
+import "./db" 
+이렇게 해주면 우리는 Database와 연결되었다. 
+이제 dotenv에 대해서 이야기 해보자 dotenv를 설치한 이유는 가끔 내가 어떤 부분을 숨겨 놓고 싶을수 있기 떄문이다.
+지금은 localhost에 설치된 MongoDB이지만 다른 곳에 설치된다면 어떻게 될까? 내 코드에 있는 URL로 부터 유저 데이터를 보는걸 원하지 않을 것이다.
+이때 dotenv를 사용하는것이다. 그건 다음영상에서 알아보자.
+내가 오픈소스 프로젝트를 하고있다고 가정하고 내 DB를 숨겨놓고싶다. 이파일을 Github에 올려놓으면 어디에 DB가 있는지 알게 될것이다. 지금은 localhost라서 괜찮다.
+그러나 실제 Application 으로 만들었을때 문제가 생긴다. 이때 dotenv를 사용한다.
+
+
+
