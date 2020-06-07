@@ -86,3 +86,30 @@ import "./db"
 
 
 
+#3.2 Configuring Dot Env
+dotenv를 구성해보자 dotenv를 구성하기 위해 처음으로 해야할 것은 여기에 .env라는 파일을 생성하는거야
+이름은 environment나 secret으로 하나 상관없다.
+그리고 만든 .env라는 파일안에다가
+MONGO_URL="mongodb://localhost:27017/we-tube"		//우리의 url 주소
+PORT=4000						//port번호
+이렇게 작성해준다.
+
+그리고 db.js에서는 누구나 볼 수있는 URL 대신에 지우고 .env로 부터 그정보를 가져오도록하자.
+import dotenv from"dotenv";		//dotenv를 import해서 dotenv변수에넣음
+dotenv.config();				// .env파일안에 있는 정보를 불러올수있다. 그리고 찾은 모든 변수들을 process.env.key에 저장할것이다.
+
+mongoose.connect(process.env.MONGO_URL, {		//process.env아래에 MONGO URL이 있다.
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+});
+
+이렇게하면 잘 연결된다. 그리고 init.js에도 똑같이 적용하자.
+import dotenv from "dotenv";			//dotenv를 import한다.
+dotenv.config();					//.env파일안에 있는 정보를 불러올수있다. 그리고 찾은 모든 변수들을  process.env.key에 저장
+
+const PORT = process.env.PORT || 4000;		//Port번호를 dotenv에있는 PORT에서 가져오거나 대상을 못찾으면 4000으로한다.
+이런식으로 key를 숨기는것이다. 이렇게 하면 키가 다른곳에서 보이지 않는다.
+.env파일을 .gitignore파일에 추가해서 ignore 하는것을 잊지말자. 그렇지 않으면 이렇게 한게 헛고생이다. 내 키가 Github에 올라가게 되기 때문이다.
+이게 Enviroment Variable을 쓰는 방법이고 내가 원하면 얼마든 만들수 있지만 이정도만 하자.
+다음 영상에서는 Model을 만들도록하자.
