@@ -113,3 +113,64 @@ const PORT = process.env.PORT || 4000;		//Port번호를 dotenv에있는 PORT에�
 .env파일을 .gitignore파일에 추가해서 ignore 하는것을 잊지말자. 그렇지 않으면 이렇게 한게 헛고생이다. 내 키가 Github에 올라가게 되기 때문이다.
 이게 Enviroment Variable을 쓰는 방법이고 내가 원하면 얼마든 만들수 있지만 이정도만 하자.
 다음 영상에서는 Model을 만들도록하자.
+
+
+#3.3 Video Model
+
+MongoDB의 장점은 document를 줄여준다는 것이다. document는 jsonfile이다. 이게 MONGODB가 완벽한 이유이다.
+하지만 MONGODB에 우리의 파일들이 어떤 식으로 생겨야 할지 알려줘야 한다. 아무거나 생성할수 없다.
+파일에 보안은 아니고 타당성이 어느정도 필요하다. 예를 들어 'MongoDB야, 우리들의 file은 video라는 이름을 가질 거야'
+그리고 모든 video들은 string type을 가질거고 그 String의 이름은 title일것이다. video들은 view를 가질것이다.
+그리고 view는 1,2,3..같은 number type 일것이다. 이런게 파일의 형태, model의 형태이다. 이것들은 models라는 폴더에 저장될것이다.
+models라는 폴더를 생성하고 Video.js를 생성하자.
+여기선 모두 대문자로 적을것이다. 여기서 내 Video들의 형태를 정의 할것이다.
+
+import mongoose from "mongoose";		//mongoose를 임포트하고
+
+해야할것 하나는 model 즉 document name이고 다른 하나는 schema이다 schema는 형태이다.
+
+const VideoSchema = new mongoose.Schema({})						// 이친구
+
+이렇게하고 여기에 schema를 정의하자 이건 이럴거고~ 저건 저럴거고~ 이렇게 말이다.
+먼저 Video는 URL을 가질것이다. 우리는 Video를 Database에 저장하지 않을것이다.
+bytes를 저장하는게 아니라 Video의 link를 집어 넣는것이다. 우리의 경우에는 우리 서버(Amazon)에 Video를 저장하는 것이다.
+Database에 video를 저장하지 않는다. 이건 그냥 text Database이다. Video의 주소를 넣는것이다. Video 전체를 넣는게 아니다.
+그렇게하면 Database가 겁나 무거워진다.
+
+ fileUrl: {
+    type: String,				//type은 String
+    required: "File URL is required",		//requried로 설정하고 required가 충족되지 못하면 error 메세지는 File URL is required로 설정 (fileUrl값이 없는 Video를 생성하려 한다면 이 error message를 받는다.)
+  },  
+ title: {					//Video title값도 있을것이다.
+    type: String,				//type은 Stirng
+    required: "Title is required",		//Title is required
+  }, 
+  description: String,			//설명의 type은 String
+  views: {
+    type: Number,				//조회수의 type은 Number
+    default: 0,				//초기값 0
+  },
+  createAt: {				
+    type: Date,				
+    default: Date.now,			//Date.now 자체는 function이고 Date.now()는 그 함수를 실행해서 현재 날짜를 반환하는것이다.
+  },					// 따라서 이렇게 하면 내가 document를 저장할때마다 function을 실행해서 현재 날짜를 받는것이다.
+});
+
+그리고 내가 할수있는게 뭐가 있는지 알고 싶다면 mongoose documentation의 schema section에서 모든 option들을 확인할 수 있다.
+이제 이 schema를 이용해서 model을 만들어보자. definition을 통해 실제 document를 만드는거다. schema는 definition같은것이다.
+
+
+const model = mongoose.model("Video", VideoSchema);		//model의 이름은 Video 그리고 Video model의 schema는 VideoSchema가 될것이다. 위에있는 친구이다.
+export default model;					
+ 
+여기까지 완료하면 현재 우리 Database는 아직 인지 못하고 있다. 왜냐면 아직 이걸 생성했다는걸 인지하지못하기 때문이다. 연결은 되어있지만 거기에 model이 있다는건 알지 못한다.
+그래서 추가를 해줘야 한다. init.js에서 model을 import 하자.
+
+import "./models/Video";
+
+
+이렇게 까지해주면 아무런 이상없이 작동한다 다음영상에서는 Video comment를 만들것이다.
+comment의 model을 만드는것이다. 사람들은 봉통 영상들에 comment를 단다.
+
+
+
