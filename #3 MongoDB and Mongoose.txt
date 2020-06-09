@@ -174,3 +174,157 @@ comment의 model을 만드는것이다. 사람들은 봉통 영상들에 comment
 
 
 
+
+#3.4 Comment Model
+이제 Comment 모델을 추가해볼것이다. models 폴더 아래에 Comment.js 라는 파일을 생성하자.
+그리고 comment는 겁나 쉬울 것이다.
+
+const CommentSchema = new mongoose.Schema({		
+  text: {						//comment에는 text가 존재할것이다.
+    type: String,					//type형은 String이고
+    required: "Text is requried",			//text가 없으면 경고문을 띄운다.
+  },
+  createAt: {					//생성일자이다.
+    type: Date,					//Date형이고
+    default: Date.now,				//Date.now자체는 function이고 Date.now()는 그함수를 실행해서 현재 날짜를 반환하는것이다.
+  },
+});
+
+
+만약에 이러한 조건이있을때 차이는 무엇이냐면
+description: String,		//한줄이면 configuration이 존재하지않아서 바로 type을 적어준다.
+  views: {			/Configuration object: configuration이 존재하는경우에는 type:과 configuration을 따로 적어준다.
+    type: Number,
+    default: 0,
+  },
+
+다음으로 알아야 할것은 data의 relationship에 대한것이다.
+이 경우에 comment는 자기 자신스스로이다. 
+한쪽에서 video를 생성하고 다른 쪽에서 comment를 생성했을때 어떻게 연결시킬것인가 그것이 문제이다.
+둘사이에 어떠한 관계가 있는데 이걸 어떻게 연관시킬까?
+comment에 video의 ID를 저장하거나 video가 ID의 array를 가지고 있는것이다.
+어떤게 어떤 것과 연결되어 있는지 알아야하기때문이다. video에 comment를 달때 이 comment는 어떤 video와 직접적으로 연결이 되어 있는지?
+
+두가지 방법이 있다. 
+한가지 방법은 여기 comment는 그대로 두고 혼자 있고, 그리고 video에선 모든 comment ID가 담긴 array를 추가하는것이다.
+모든 object들은 보통 ID를 가지고 있어 우리의 이름처럼 말이지, 따라서 모든 comment의 정보를 저장하는 대신 모든 video들이 comment id들을 가지고 있는 것이다.
+처음 video를 생성하면 comments는 0 일것이다 왜냐하면 commnet가 없을것이다. 그리고 나서 해당 video에 대한 comment를 생성하면
+새로운 comment ID를 video안에 있는 comment의 list 라는곳에 저장하는것 이다. 그러면 comment 가 1이될것이다.
+
+이런식으로 할것이고 두가지 방법을 모두 해볼것이다.
+
+//comment.js
+import mongoose from "mongoose";
+
+const CommentSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: "Text is requried",
+  },
+  createAt: {
+    type: Date,
+    default: Date.now,
+  },
+  video: {						// 배열로 생성하지 않은 이유는 한명의 사용자가 등록했기 때문이다.
+    type: mongoose.Schema.Types.ObjectId,		//이 comment는 이 video와 연결되어 있고 이 video의 type은 mongoose.Schema.Types.ObjectId
+    ref: "Video",					// 어떤 objectID가 어디서 온건 지를 알려줘야할것이다. 어느 model에서 온건지! 이 경우에는 Video이다.
+  },
+});
+
+const model = mongoose.model("Comment", CommentSchema);
+export default model;
+
+//Video.js
+Video.js에서 Video라는 이름이 똑같이 있어야한다.
+
+
+import mongoose from "mongoose";
+
+const VideoSchema = new mongoose.Schema({
+  fileUrl: {
+    type: String,
+    required: "File URL is required",
+  },
+  title: {
+    type: String,
+    required: "Title is required",
+  },
+  description: String,
+  views: {
+    type: Number,
+    default: 0,
+  },
+  createAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const model = mongoose.model("Video", VideoSchema);		//여기에 똑같이 Video라고 되어있다.
+export default model;
+
+기본적으로 Database에는 이런 식으로 저장될것이다.
+그리고 mongoose에게 말하는것이다. "ID 1에 해당하는 Video를 가져와줘"
+그래서 ref를 사용하는것이다 실제로 우리는 Video의 ID를 원하기 때문이다.
+좋아요를 저장하거나 유저를 저장하거나 할땐 다른 ref를 사용해야할것이다.
+이게 방법 첫번째이다. comment를 생성하면 text와 createAt을 생성하고 video ID는 1
+
+다른방법으로는 Object ID들의 array를 생성해야한다. 
+//Video.js
+import mongoose from "mongoose";
+
+const VideoSchema = new mongoose.Schema({
+  fileUrl: {
+    type: String,
+    required: "File URL is required",
+  },
+  title: {
+    type: String,
+    required: "Title is required",
+  },
+  description: String,
+  views: {
+    type: Number,
+    default: 0,
+  },
+  createAt: {
+    type: Date,
+    default: Date.now,
+  },
+  comments: [				//Video.js에서 comments를 추가한다. comments는 array이다. 그래서 []를 사용한다.
+    {					//왜 배열로 생성했냐면 하나의 Video에 여러명의 사용자가 댓글을 달기 때문이다.
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
+});
+
+const model = mongoose.model("Video", VideoSchema);
+export default model;
+
+
+//Comment.js
+import mongoose from "mongoose";
+
+const CommentSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: "Text is requried",
+  },
+  createAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const model = mongoose.model("Comment", CommentSchema);		//model의 이름은 Comment이고 comment Model의 schema는 CommentSchema가 될것이다(위에서 선언함)
+export default model;						
+
+이러한 방식으로 하면 모든 Comment의 정보를 여기에 넣는게 아니다. Comment의 ID만 넣는것이다.
+[1,2,4,7] 이런식으로 Video와 연결된 Comment들의 ID가 저장된다.
+
+이렇게 두가지 선택지가 있다. 모든 Comment ID들을 array로 video에 집어 넣을것인가? 혹은 Comment에 연결된것을 Video ID를 줄것인가?
+그리고 모든걸 다하고 init.js에 import 해주어야한다.
+
+다음영상에서는 Video를 생성해볼것이다.
+
