@@ -328,3 +328,66 @@ export default model;
 
 다음영상에서는 Video를 생성해볼것이다.
 
+
+
+ #3.5 Home Controller Finished
+
+이렇게 만든 Model들을 어떻게 사용할 수 있을까? 이렇게 만든 Model들을 어떻게 사용할 수 있을까? 믿지 못할 정도로 간단하다.
+여기 videoController에서
+export const home = (req, res) => {
+  res.render("home", { pageTitle: "Home", videos });		//여기서 , videos 이부분
+};
+ 누군가 home으로 가면 여기 videos는 undefined일 것이다.
+search 역시 똑같다.
+video가 정의 되지 않았다고 error가 뜰것이다. videoController에서 
+import Video from "../models/Video" 라고 Video를 model아래에 있는 Video로 부터 임포트해준다.
+이건 Database의 element가 아니라 이건 단지 model이다. 아예 다른것이다. element를 받는 통로 일 뿐이지 element자체는 아니다.
+그리고 export const home 함수에 새로운 JavaScript 요소인 async라는것을 추가할 것이다.
+async는 나를 기다려주는 무엇인가 이다. 'JavaScript야 이 function의 어떤 부분은 꼭 기다려야 해' 라고 이야기하는것과 같다.
+자바스크립트는 한번에 많은 일을 할수 있다. 이건 정말 멋지고 알아두어야 하는 내용이다. 그래서 원래 JavaScript는 기다리지 않는다.
+'일단 Video를 살펴보고 있으니까 다음 render 작업도 같이 할게' 이런식으로간다.
+우리는 JavaScript가 우릴 기다리게 해야한다. 그러려면 async라는 keyword를 추가해야한다. 
+
+
+export const home = async (req, res) => {
+  const videos = await Video.find({}); 				// awiat는  다음 과정이 끝날때까지 잠시 기다려 달라는 의미이다. 그리고 Video.find({})는 Database에 있는 모든 Video를 가져올것이다.
+  res.render("home", { pageTitle: "Home", videos });  		//해당 과정이 끝나면 videos가 정해질거고 그 video를사용할것이다. 만약 async를 쓰지 않았다면 error가 날 것이다. awiat keyword는 async 없이는 쓸수가 없기 때문이다.
+};
+
+쉽다. awiat 뒤에 여러가지 다른옵션을 사용할수있다.
+여기까지 마치고 새로고침을 하게되면 videos는 빈 array일것이다 생성된 video가 아직 없기 때문이다.
+그리고 videos는 빈 array이고 나중에 멋지게 바뀔부분이다.
+
+이 await 부분은 JavaScript에서 엄청 매력적인 부분이다. 왜냐면 내 코드를 멋지게 바꿔주기때문이다.
+이렇게 하면 await 부분이 끝나기 전까지는 render 부분을 실행하지 않을 것이라는것을 확실하게 보여주기 때문이다.
+해당과정이 성공적으로 끝나야 하는것은 아니다. 그냥 끝날때까지 기다리는것이다. 만약에 error가 생겨도 다음 render 부분을 실행한다.
+왜냐면 끝났기 때문이다. 성공적으로 끝난게 아니라 그냥 끝난것이다. 
+const videos = await Video.find({}); 	// 이렇게 짜는것은 좋지 않다. 발생할 수 있는 모든 error을 잡아야 한다.
+그래서 우리는 try 와 catch를 사용할것이다.
+
+try는 우리가 해야할 것들 그리고 만약 실패한다면 해당 error를 잡아낼것이다. 그래야 우리가 무슨 error 인지 볼수 있기 때문이다.
+이런식으로 수정해준다.
+ try {
+    const videos = await Video.find({});
+    res.render("home", { pageTitle: "Home", videos });
+  } catch (error) {
+    console.log(error);
+    res.render("home", { pageTitle: "Home", videos: [] });		//error가 생기면 video는 없을 것이고 default로 videos는 빈 array가 될것이다.
+  }
+};
+
+두가지를 배웠다 
+첫번째 async 와 await
+await: 해당 과정이 끝날 때까지 기다리게 하는것이다. 성공이나 실패여부가 중요한게 아니라 끝났다는 것이 중요하다.
+
+두번째로 try catch
+error가 생기면 default로 우린 잡아내지 못한다. 이건 Node.JS의 문제이다. 엄청 중요한 error가 있고, 우리가 잡아내지 못한다면 
+우리는 error을 최선의 방법으로 잡아내야한다. Node.JS가 큰에러와 마주하면 아무것도 안하고 서있기때문에 
+try cath를 사용하는것이다. error을 받아서 throw할 수 있기 때문이다.
+
+video를 생성하고싶은데 그러려면 한가지를 더 해야 한다. 우린 아직 Upload를 할 수 없다.
+다음 영상에서 Upload를 하게 될것이다.
+다음영상에서 우리가 배울것은 어떻게 User가 Video file을 선택해서 어딘가에서 upload해서 해당 file url을 얻고
+fileUrl로 Video를 생성하는것이다 어떻게 할지는 알고 있다. 어떤 것을 Upload해서 하지만 지금은 아무거나 Upload할수 있다. 좋은생각이 아니다.
+Video 가 아닌 다른 file이 Upload되는것을 원하지 않는다. file을 Upload해서 middleware에서 받아 그 middleware에서 file을 upload하고 URL을 복사해서 Database에 저장하는것이다.
+
