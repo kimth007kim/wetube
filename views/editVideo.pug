@@ -2,7 +2,7 @@ extends layouts/main
 
 block content
     .form-container
-        form(action=`/videos${routes.editVideo}`,method="post")
+        form(action=`/videos${routes.editVideo}`,method="post",enctype="multipart/form-data")
             input(type="text",placeholder="Title",name="title")
             textarea(name="description",placeholder="Description")
             input(type="submit", value="Update Video")

@@ -387,7 +387,100 @@ try cath를 사용하는것이다. error을 받아서 throw할 수 있기 때문
 
 video를 생성하고싶은데 그러려면 한가지를 더 해야 한다. 우린 아직 Upload를 할 수 없다.
 다음 영상에서 Upload를 하게 될것이다.
-다음영상에서 우리가 배울것은 어떻게 User가 Video file을 선택해서 어딘가에서 upload해서 해당 file url을 얻고
+다음영상에서 우리가 배울것은 어떻게 User가 Video file을 선택해서 어딘가에서 upload해서 해당 fileurl을 얻고
 fileUrl로 Video를 생성하는것이다 어떻게 할지는 알고 있다. 어떤 것을 Upload해서 하지만 지금은 아무거나 Upload할수 있다. 좋은생각이 아니다.
 Video 가 아닌 다른 file이 Upload되는것을 원하지 않는다. file을 Upload해서 middleware에서 받아 그 middleware에서 file을 upload하고 URL을 복사해서 Database에 저장하는것이다.
 
+
+
+#3.6 Uploading and Creating a Video
+아직 업로드하는것이 끝난것이아니다. 우선 누군가 우리 videoController에서 upload하려 할 때 무슨 일이 일어나는지 알아야 한다.
+export const postUpload = (req, res) => {
+  const {
+    body: { file, title, description },
+  } = req;
+  console.log(file, title, description);			//이 문장을 추가해서 확인을 해보자.
+  //To Do:Upload and save video
+  res.redirect(routes.videoDetail(56448611552423));
+};
+
+그리고 업로드 페이지로 가서 Upload를 해보자. 이미지를 Upload할것이다. 뭐든 상관 없다.
+그리고 콘솔을 확인해보자. filename을 반환하고 title과 description을 반환한다. 하지만 이경우에 난 file은 원하지 않는다. 
+내가 원하는것은 location이다. 어떤 서버에 있는 location 내 서버 일수도있고, 아마존 서버일 수도 있다. 
+엄청 중요한점이 나는 file자체를 저장하지 않을것이다. 그 file의 location을 저장할 것이다.
+
+우선 할건, Video가 아닌 file이 들어오지 않게 보호하는 것이다.
+
+upload.pug에서 이부분을 보호할것이다. 난 video file만 받을수 있도록 하자
+   	form(action=`/videos${routes.editVideo}`,method="post",enctype="multipart/form-data")		//enctype="multipart/form-data" 을 추가했다 왜내면 우리는 file을 보내는것이기 때문이다. 그래서 form의 encoding이 달라진다.
+	label(for="file") Video File
+            input(type="file",id="file",name="file",required=true, accept="video/*" )	//	accept="video/* 를 추가해주었다.
+            input(type="text",placeholder="Title",name="title",required=true)
+            textarea(name="description",placeholder="Description",required=true)
+            input(type="submit",value="Upload Video")
+
+이렇게 해주면 오직 video만 선택이 가능하다. 그리고 설명제목, 비디오파일까지 입력이 끝내도 우리는 아직  send하지 않을것이다.
+왜냐하면 file을 Upload하고 URL을 반환하는 middleware가 있어야 하기 때문이다. 이 middleware는 multer 라고 한다.
+이 middleware는 겁나게 유명하다. 내가 이것처럼 function을 집어넣으면 middleware가 file의 URL을 반환할것이다.
+다운하는 방법은 이렇다.
+-npm install multer
+그리고 우리의 Upload Form의 enctype에 multipart/from-data를 추가해야한다.
+
+그리고 middleware.js에서 Multar로 middleware를 만들어보자. configure 과정은 엄청 쉽다.
+var expres = require('express')
+var multer = require('multer')		//require로 ('multar')로 불러와주고
+var upload = muleter({ dest: ' uploads/'}	//그냥 쓰면된다 겁나쉽다.
+
+그러면 우리느 middlewares.js에서
+
+import multer from "multer";						//우선 multer를  import하고
+import routes from "./routes";					
+
+const multerVideo = multer({ dest: "videos/" });				//destination을 videos라고 적어준다.
+
+export const localsMiddleware = (req, res, next) => {
+  res.locals.siteName = "WeTube";
+  res.locals.routes = routes;
+  res.locals.user = {
+    isAuthenticated: true,
+    id: 1,
+  };
+  next();
+};
+
+export const uploadVideo = multerVideo.single("videoFile");			// multerVideo를 export해주는 문장을 적는다. .single이라고 적은이유는 오직 하나의 파일만 Upload할 수 있다는것을 의미한다.
+								//그리고 ()괄호안에 들어갈것은 Name part이다. Name part는 여기 들어올 파일의 Name이다. 
+								//우리는 upload.pug에서 name부분이다. 그래서 upload.pug에서 input(video 부분의 name을 videoFile 로 바꾸고 이안에도 videoFile을 넣어 주었다.
+
+
+그 다음엔 우리의 router로 가서 
+videoRouter.post(routes.upload, postUpload); 이부분을
+videoRouter.post(routes.upload, uploadVideo, postUpload); 로 바꾸고 uploadVideo를 import해준다.
+모든게 제대로 들어갔다면 우리가 file을 Upload하면 server에 있는 folder(video/)에 Upload 하고 postUpload라는 function은 해당 file에 접근할것이다. file 방식이 아닌 URL 방식으로 접근한다.
+모든게 제대로 들어갔는지 확인하려면 postUpload함수에 console.log(body); 를 쳐서 확인해보자.
+// res.redirect(routes.videoDetail(56448611552423)); 리다이렉트부분도 막아놓고 그냥 render하게만 놔두자 redirect되면 귀찮다. 이번에만 이다.
+이렇게 실행하게되면 body가 정의되지 않았다고 뜨게된다.
+const{ body:{fifle,title,description} =req; 이렇게 되어서 그렇다. 존재하는건 file, title, description이다. 이게 우리가 마지막으로 정의한 variable이 아니기 때문이다.
+이렇게 바꾸면 body는 존재하게 된다.
+const{ body} = req; 
+우리가 원한건 file을 request 하는 것이었다. body를 request하는것이 아니었다.
+ const { body, file } = req;
+  console.log(body, file);
+이렇게 바꾸어보자. 이렇게하면 video file의 요소들을 볼수있다. video file을 Upload해주고 우리에게 이러한 정보들을 보내준다. 우리가 원하던것은 path이다.
+이제 file을 form으로 부터 받아올 필요가 없고 file:{path} 에서 받아오면된다. 이제 video를 생성할 수있다. 이전에 한것 처럼 async를 추가하자.
+
+
+
+export const postUpload = async (req, res) => {	//이전에 한것 처럼 async를 추가하자.
+  const {
+    body: { file, title, description },
+    file: { path },					//이제 file을 form으로 부터 받아올 필요가 없고 file:{path} 에서 받아오면된다. 
+  } = req;
+  const newVideo = await Video.create({		//이전에 작성했던것과 같은 것들을 작성해야한다.
+    fileUrl: path,
+    title,
+    description,
+  });
+  console.log(newVideo);
+  res.redirect(routes.videoDetail(newVideo.id));		//지금 이 Video는 실제 ID를 가지고 있다. newVideo.id로 받으면된다.
+};
