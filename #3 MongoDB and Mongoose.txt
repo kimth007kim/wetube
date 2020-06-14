@@ -484,3 +484,73 @@ export const postUpload = async (req, res) => {	//이전에 한것 처럼 async�
   console.log(newVideo);
   res.redirect(routes.videoDetail(newVideo.id));		//지금 이 Video는 실제 ID를 가지고 있다. newVideo.id로 받으면된다.
 };
+
+이제 성공적으로 video를 Upload하고 NodeJS, Multar, MongoDB를 이용해서 file을 생성했다.
+
+
+#3.7 Uploading and Creating a Video part Two
+
+이제 Video를 Upload할 수 있다. 하지만 homer으로 이동하면 video들이 나타나지 않는다. 왜냐하면 link가 망가졌기때문이다.
+먼저 여기 videos 폴더를 지우고 다음으로 middleware에 'video/'가 아닌 'uploads/videos/'에 업로드하도록 수정할것이다.
+
+const multerVideo = multer({ dest: "videos/" });
+const multerVideo = multer({ dest: "uploads/videos/" }); 이렇게 바꾸어 준다.
+
+'/uploads/videos/' 이런 식으로 안 쓰는게 중요한데 해당위치가 나의 project file 안에 있는 diectory 라고 생각 할 거기 때문이다.
+/uploads/videos/이런식으로 쓰면 내컴퓨터의 root에 upload가 만들어 질것이다. 이것이 첫번째로 수정할 내용이고
+
+다음으로는 우리가 어떤 문제를 만들었는데 MongoDB modle이 한 document를 Database에 저장했고 이 Document는 잘못된 URL을 가지고 있다.
+우리는 아직 Video를 수정하는 방법을 가지고 있지 않다.
+
+그래서 MongoDB에서 어떻게 다룰 수 있는지 배워보자. 
+>mongo 
+몽고로 가서 Mongo comments를 가지고 어떻게 너의 Database를 수정 할수 있는지 보자
+>help	//도움말을 보는 명령어 이다.
+그리고 도움말에서 use <db_name>이라고 있다.
+우리의 db_name은 we-tube이므로
+>use we-tube		
+switched to db we-tube
+>show collections			//collections는 model 같은 것이다.	
+videos
+>db.videos.remove({})
+WriteResult({ "nRemoved":1})		//여기 내가 하나의 video를 삭제 했다고 뜬다
+>exit			
+bye
+
+이제 바뀐 destination에 upload를 해보자 업로드하고 홈으로 오게되면 망가졌다. 검사를 해보도록 하자.
+해당 주소가 망가졌다. 왜 이런거냐면 Express 에서는 알다시피 모든것에 대한 Route가 있다. uploads를 위한 기본적 route 가 필요하다.
+지금은 아무 Router를 보면서 맞는게 있는지 찾겠지만 존재할리가 없다. 이제 만들것이고 겁나 쉬울것이다.
+
+app.js에서 아래의 사항을 추가한다.
+app.use("/uploads", express.static("uploads")); 	//누군가 /'uploads'로 간다면 express.static()을 이용해라 이건 directory에서 file을 보내주는 middleware이다.
+					//express.static():주어진 directroy 에서 file을 전달하는 새로운 middleware function이다. 
+					//따라서 이경우에는 어떤 종류의 controller나 view 같은건 확인 하지 않을것이다. 그냥 file만 확인할것이다.
+					//directory는 'uploads'
+이제 '/uploads'로 가면 'uploads라는 directory 안으로 들어가는 것이다.
++추가
+home.pug에서 videoFile:item.videoFile로 했던것때문에 video가 안된다.
+home.pug에서 videoFile: item.fileUrl로만 바꾸어주면 mixin인 videoBlock.pug에는 videoFile로 전달되니, 다른걸 바꾸지 않아도 잘 작동된다.
+
+이제 정상적으로 작동한다. video를 다운받아서 import 시켰다.
+
+user avatar도 이것과 같은 방식으로 다루면 된다.
+경고하자면 app.use("/uploads", express.static("uploads"))는 좋은 예시가 아니다. 이것처럼 user에 해당하는 file을 네 server에 저장하는것은 좋은게아니다. 
+만약 내 코드를 update 해야한다면 어떨까? 새로운 server를 upload하고 과거 server를 버리고 네가 수천의 유저들을 가지고 있고 그것의 복사본을 가지고 싶다면 어떨까?
+file이 사라지면 어떨까? 전혀 좋은 생각이 아니다. server의 코드는 영원해 보이면 안된다. 보통 웹사이트에서 네가하는건  server를 만들고 새로운 version이 나오면 새로운 서버로
+redirect만 시키는거다. 옛날 서버와는 작별인사를 해야한다. 주로 그렇게들하고 이 강좌 끝에는 우리도 그렇게 할것이다.
+어떻게 많은 server들을 만드는지 알려줄것이다. 그러나 그게 user file들을 우리의 website에 저장해야하는걸 의미 하지는 않는다. 왜냐면 server는 왔다가도 가거든
+예를들어서 수십억의 유저들이 나의 server에 Upload한다고 가정해보자 내가 Upload 하고 싶을때 마다 너는 server를 복사하고 아마 두개의 서버가 필요 할 수도 있다.
+이server는 미국을 위한 server 다른 server느 마다가스카를 위한 server. 이렇게 한다면 모든 file들을 복사해야한다. 정말 잘못된 일이다. 이건 그냥 시범으로 이렇게 하는것이다.4
+나는 지금 Node.js와 Express에 대해서 배우고있고 static file들을 사용하는게 멋지다는것을 보고있다. 근데 생각해보면 이건 static 파일이 아니다.
+static file은 주로 Front-end에서 쓰이는 JavaScript나 CSS 로고 파일이다. 그러나 user같은 생성 된 content는 server와 분리 되어야 한다. 이제 그렇게 할것이다. Moltar를 어떻게 사용하는지 배울것이고
+이 file을 Amazon Cloud에 Update하고 Amazon Cloud에서 URL을 받아오는것이다.
+
+또 주의하자면 이런식의 file을 가지고 있다면 어떤 user가 겁나게 큰 file을 Upload해서 나의 server를 막아버릴수도 있다. 이러면 다른 user가 오는것도 막히게 된다.
+이런 방식으로 file들을 다루는것은 문제가 너무나 많다. 한개의 서버에 다루는것은 말이다. 하지만 지금은 작동되고 결과에 만족한다.
+이렇게 멋진 서버도 있고 서버에서 데이터도 가져왔다. 
+
+다음 영상에서 할것은 이곳을 클릭해서 해당비디오를 자세히보기와 delete 버튼과 edit버튼도 추가하고 검색하는것도 추가할것이다 user에 관한것들도 할것이 많다.
+
+
+
+
